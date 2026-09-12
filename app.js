@@ -32,7 +32,7 @@ class BlackbirdDocsLanding extends BlackbirdComponent {
 
       .btn { display: inline-block; background: #0070f3; color: white; text-decoration: none; padding: 12px 24px; border-radius: 8px; font-weight: 500; margin-top: 20px; cursor: pointer; border: none; }
       .btn:hover { background: #0051a8; }
-      .interactive-section { margin-top: 50px; border-top: 1px solid #eee; padding-top: 40px; text-align: center; }
+      .interactive-section { margin-top: 50px; border-top: 1px solid #eee; padding-top: 40px; text-align: center; margin-bottom: 60px; }
       .counter-display { font-size: 2rem; font-weight: bold; margin: 15px 0; color: #0070f3; }
 
       /* Footer Styles */
@@ -123,7 +123,8 @@ class BlackbirdDocsLanding extends BlackbirdComponent {
     super();
     this.registerLocalStore(new SimpleStore({
       version: 'v0.1.0',
-      clickCount: 0
+      clickCount: 0,
+      currentYear: 2026
     }));
   }
 
