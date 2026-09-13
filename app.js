@@ -30,14 +30,14 @@ class BlackbirdDocsLanding extends BlackbirdComponent {
       .card { border: 1px solid #e1e1e1; padding: 25px; border-radius: 12px; background: #fff; display: flex; flex-direction: column; }
       .card h3 { margin-top: 0; font-size: 1.25rem; display: flex; align-items: center; gap: 10px; }
 
-      .btn { display: inline-block; background: #0070f3; color: white; text-decoration: none; padding: 12px 24px; border-radius: 8px; font-weight: 500; margin-top: 20px; cursor: pointer; border: none; }
-      .btn:hover { background: #0051a8; }
+      .btn { display: inline-block; background: #ff8d00; color: white; text-decoration: none; padding: 12px 24px; border-radius: 8px; font-weight: 500; margin-top: 20px; cursor: pointer; border: none; }
+      .btn:hover { background: #dd7a00; }
       .interactive-section { margin-top: 50px; border-top: 1px solid #eee; padding-top: 40px; text-align: center; margin-bottom: 60px; }
-      .counter-display { font-size: 2rem; font-weight: bold; margin: 15px 0; color: #0070f3; }
+      .counter-display { font-size: 2rem; font-weight: bold; margin: 15px 0; color: #ff8d00; }
 
       /* Footer Styles */
       footer { border-top: 1px solid #eee; padding: 30px 0; text-align: center; color: #666; font-size: 0.9rem; }
-      footer a { color: #0070f3; text-decoration: none; font-weight: 500; }
+      footer a { color: #ff8d00; text-decoration: none; font-weight: 500; }
       footer a:hover { text-decoration: underline; }
       .footer-meta { margin-top: 8px; font-size: 0.8rem; color: #999; }
 
