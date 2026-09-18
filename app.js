@@ -166,6 +166,21 @@ customElements.define('my-component', MyComponent);</code></pre>
       clickCount: 0,
       currentYear: 2026
     }));
+
+    // PARSER: Check if the user loaded the site via a 404 redirect query string
+    const urlParams = new URLSearchParams(window.location.search);
+    const redirectPath = urlParams.get('p');
+
+    if (redirectPath === '/getting-started') {
+      // Clean up the URL search bar query text without refreshing
+      window.history.replaceState(null, '', '/getting-started');
+
+      // Wait for the DOM element trees to assemble, then force display the page
+      setTimeout(() => {
+        this.shadowRoot.getElementById('landing-view').style.display = 'none';
+        this.shadowRoot.getElementById('getting-started-view').style.display = 'block';
+      }, 0);
+    }
   }
 
     // Surgical state transitions that update element view states layout paths
