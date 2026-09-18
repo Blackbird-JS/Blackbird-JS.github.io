@@ -19,7 +19,15 @@ class SimpleStore {
 class BlackbirdDocsLanding extends BlackbirdComponent {
   static templateString = `
     <style>
+      :root { --primary-color: #111, --secondary-color: #ff8d00, --secondary-color-dark: #dd7a00 }
       :host { display: block; font-family: system-ui, -apple-system, sans-serif; color: #111; max-width: 1200px; margin: 0 auto; padding: 40px 20px; line-height: 1.5; }
+
+      /* FLASH SHIELD: Hide major views completely during cold boot up */
+      .view-panel { opacity: 0; display: none; transition: opacity 0.15s ease-in-out; }
+
+      /* Utilities to switch states smoothly */
+      .view-panel.active { display: block; opacity: 1; }
+
       header { text-align: center; margin-bottom: 50px; }
       h1 { font-size: 3rem; margin-bottom: 10px; letter-spacing: -1px; display: flex; align-items: center; justify-content: center; gap: 15px; }
       .badge { background: #111; color: #fff; padding: 4px 10px; border-radius: 20px; font-size: 0.85rem; font-weight: 500; align-self: center; }
@@ -43,8 +51,8 @@ class BlackbirdDocsLanding extends BlackbirdComponent {
       .setup-section h2 { margin-top: 0; font-size: 1.5rem; color: #111; }
 
       /* Code Blocks */
-      pre { background: #111; color: #f4f4f4; padding: 15px; border-radius: 8px; font-family: monospace; font-size: 0.9rem; overflow-x: auto; text-align: left; }
-      code { font-family: monospace; }
+      pre { background: #111; color: #ff8d00; padding: 15px; border-radius: 8px; font-family: 'JetBrains Mono', monospace; font-size: 0.9rem; overflow-x: auto; text-align: left; }
+      code { font-family: "JetBrains Mono", monospace; }
 
       footer { border-top: 1px solid #eee; padding: 30px 0; text-align: center; color: #666; font-size: 0.9rem; }
       footer a { color: #ff8d00; text-decoration: none; font-weight: 500; }
@@ -61,7 +69,7 @@ class BlackbirdDocsLanding extends BlackbirdComponent {
     </style>
 
     <!-- 1. ACTIVE CONDITION ROUTE A: THE PRIMARY LANDING DASHBOARD -->
-    <div id="landing-view">
+    <div id="landing-view" class="view-panel">
       <header>
         <h1>
           BlackbirdJS
@@ -109,11 +117,11 @@ class BlackbirdDocsLanding extends BlackbirdComponent {
     </div>
 
     <!-- 2. ACTIVE CONDITION ROUTE B: THE GETTING STARTED DOCS VIEW -->
-    <div id="getting-started-view" style="display: none;">
+    <div id="getting-started-view" class="view-panel">
       <header>
         <h1>Getting Started with BlackbirdJS</h1>
         <p class="tagline">Follow these integration pathways to integrate the zero-build reactive runtime into your stack.</p>
-        <button class="btn btn-secondary" data-on:click="goToLanding">← Back to Overview</button>
+        <button class="btn" data-on:click="goToLanding">← Back to Overview</button>
       </header>
 
       <main class="docs-container">
@@ -122,7 +130,7 @@ class BlackbirdDocsLanding extends BlackbirdComponent {
           <h2>Approach 1: Zero-Build Browser CDN Integration</h2>
           <p>Ideal for rapid prototyping, single-file applications, and lightweight dashboards. Load modules directly into any browser window via modern ES-module content networks with absolutely zero configuration dependencies.</p>
           <pre><code>&lt;script type="module"&gt;
-  import { BlackbirdComponent } from 'https://esm.sh';
+  import { BlackbirdComponent } from 'https://esm.sh/@blacjbird/component';
 
   class CustomComponent extends BlackbirdComponent {
     constructor() {
@@ -144,7 +152,6 @@ class BlackbirdDocsLanding extends BlackbirdComponent {
           <pre><code>import { BlackbirdComponent } from '@blackbirdjs/component';
 
 class MyComponent extends BlackbirdComponent {
-  // Enforce zero-build multi-strategy path loaders
   static templatePath = './components/my-component.template.html';
 }
 customElements.define('my-component', MyComponent);</code></pre>
@@ -171,30 +178,45 @@ customElements.define('my-component', MyComponent);</code></pre>
     const urlParams = new URLSearchParams(window.location.search);
     const redirectPath = urlParams.get('p');
 
-    if (redirectPath === '/getting-started') {
-      // Clean up the URL search bar query text without refreshing
-      window.history.replaceState(null, '', '/getting-started');
+    // Wait for the DOM element trees to assemble, then force display the page
+    setTimeout(() => {
+      const landingView = this.shadowRoot.getElementById('landing-view');
+      const docsView = this.shadowRoot.getElementById('getting-started-view');
 
-      // Wait for the DOM element trees to assemble, then force display the page
-      setTimeout(() => {
-        this.shadowRoot.getElementById('landing-view').style.display = 'none';
-        this.shadowRoot.getElementById('getting-started-view').style.display = 'block';
+        if (redirectPath === '/getting-started') {
+          // Clean up the URL search bar query text without refreshing
+          window.history.replaceState(null, '', '/getting-started');
+          docsView.classList.add('active');
+        } else {
+            landingView.classList.add('active');
+          }
       }, 0);
-    }
   }
 
-    // Surgical state transitions that update element view states layout paths
-  goToGettingStarted() {
+  // Surgical state transitions that update element view states layout paths
+  goToGettingStarted(e) {
+    if (e && typeof e.preventDefault === 'function') e.preventDefault();
+
     // Modify URL hash path natively for clean local-first browser history state updates
     window.history.pushState(null, '', '/getting-started');
-    this.shadowRoot.getElementById('landing-view').style.display = 'none';
-    this.shadowRoot.getElementById('getting-started-view').style.display = 'block';
+
+    const landingView = this.shadowRoot.getElementById('landing-view');
+    const docsView = this.shadowRoot.getElementById('getting-started-view');
+
+    landingView.classList.remove('active');
+    docsView.classList.add('active');
   }
 
-  goToLanding() {
+  goToLanding(e) {
+    if (e && typeof e.preventDefault === 'function') e.preventDefault();
+
     window.history.pushState(null, '', '/');
-    this.shadowRoot.getElementById('getting-started-view').style.display = 'none';
-    this.shadowRoot.getElementById('landing-view').style.display = 'block';
+
+    const docsView = this.shadowRoot.getElementById('getting-started-view');
+    const landingView = this.shadowRoot.getElementById('landing-view');
+
+    docsView.classList.remove('active');
+    landingView.classList.add('active');
   }
 
   async connectedCallback() {
